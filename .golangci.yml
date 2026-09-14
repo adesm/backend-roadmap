@@ -1,0 +1,15 @@
+version: "2"
+
+run:
+  timeout: 3m
+
+linters:
+  enable:
+    - errcheck      # cek error yang di-ignore diam-diam (misal: err gak dicek)
+    - govet         # bug umum (misal: format string salah tipe)
+    - staticcheck   # analisis statis lanjutan (kode mati, bug logic)
+    - unused        # variable/import/fungsi yang gak kepake
+
+formatters:
+  enable:
+    - gofmt         # cek formatting sesuai standar Go
