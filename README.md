@@ -32,7 +32,7 @@ go test ./... -race -cover
 
 | Service | Status | Deskripsi |
 |---|---|---|
-| _(belum ada)_ | | |
+| url-shortener | Done | Clean architecture, unit+integration test, REST API |
 
 ## Architecture Decision Records
 
