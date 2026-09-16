@@ -2,7 +2,9 @@ package postgres
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -29,6 +31,42 @@ func (r *ShortenerRepository) Save(url *domain.ShortURL) error {
 	_, err := r.db.Exec(context.Background(), query,
 		url.ID, url.OriginalURL, url.ShortCode, url.CreatedAt)
 	return err
+}
+
+func (r *ShortenerRepository) SaveWithEvent(url *domain.ShortURL, event domain.ShortURLCreatedEvent) error {
+	ctx := context.Background()
+
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	_, err = tx.Exec(ctx,
+		`INSERT INTO short_urls (id, original_url, short_code, created_at) VALUES ($1, $2, $3, $4)`,
+		url.ID, url.OriginalURL, url.ShortCode, url.CreatedAt,
+	)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	payload, err := json.Marshal(event)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	_, err = tx.Exec(ctx,
+		`INSERT INTO outbox_events (id, event_type, payload) VALUES ($1, $2, $3)`,
+		event.EventID, "short_url.created", payload,
+	)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return tx.Commit(ctx)
 }
 
 func (r *ShortenerRepository) FindByCode(code string) (*domain.ShortURL, error) {

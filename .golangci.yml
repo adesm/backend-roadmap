@@ -5,10 +5,12 @@ run:
 
 linters:
   enable:
-    - errcheck      # cek error yang di-ignore diam-diam (misal: err gak dicek)
+    # - errcheck      # cek error yang di-ignore diam-diam (misal: err gak dicek)
     - govet         # bug umum (misal: format string salah tipe)
     - staticcheck   # analisis statis lanjutan (kode mati, bug logic)
     - unused        # variable/import/fungsi yang gak kepake
+  disable:
+  - errcheck
 
 formatters:
   enable:

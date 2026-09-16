@@ -33,6 +33,8 @@ go test ./... -race -cover
 | Service | Status | Deskripsi |
 |---|---|---|
 | url-shortener | Done | Clean architecture, unit+integration test, REST API |
+| email | Done | rabbit mq |
+| order | Done | kafka |
 
 ## Architecture Decision Records
 

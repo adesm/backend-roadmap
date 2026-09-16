@@ -37,7 +37,13 @@ func (u *ShortenerUsecase) Shorten(originalURL string) (*domain.ShortURL, error)
 		CreatedAt:   time.Now(),
 	}
 
-	if err := u.repo.Save(shortURL); err != nil {
+	event := domain.ShortURLCreatedEvent{
+		EventID:     shortURL.ID, // konsisten dengan diskusi idempotency sebelumnya
+		ShortCode:   shortURL.ShortCode,
+		OriginalURL: shortURL.OriginalURL,
+	}
+
+	if err := u.repo.SaveWithEvent(shortURL, event); err != nil {
 		return nil, err
 	}
 

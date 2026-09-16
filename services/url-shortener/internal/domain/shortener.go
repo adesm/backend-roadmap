@@ -23,5 +23,6 @@ var (
 // Interface (kontrak) — usecase butuh ini, tapi TIDAK tau implementasinya pakai apa
 type ShortURLRepository interface {
 	Save(url *ShortURL) error
+	SaveWithEvent(url *ShortURL, event ShortURLCreatedEvent) error
 	FindByCode(code string) (*ShortURL, error)
 }
